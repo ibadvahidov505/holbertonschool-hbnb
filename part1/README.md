@@ -30,7 +30,6 @@ This layer represents the interface between the user and the system. It includes
 When a user performs an action, the request is received in this layer and passed through the Facade.
 
 ---
-
 ### 2. Business Logic Layer  
 This layer contains the core logic of the application. It includes the main entities:  
 
@@ -65,7 +64,7 @@ The Facade acts as an intermediary between layers and provides a unified interfa
 
 ---
 
-## Package Diagram  
+## Package Diagram
 
 ```mermaid
 classDiagram
@@ -78,8 +77,8 @@ class PresentationLayer {
 class Facade {
     +createUser()
     +getPlaces()
-    +createReview()
-    +createAmenity()
+    +addReview()
+    +addAmenity()
 }
 
 class BusinessLogicLayer {
@@ -96,50 +95,43 @@ class PersistenceLayer {
     +AmenityRepository
 }
 
-PresentationLayer --> Facade : Sends requests
-Facade --> BusinessLogicLayer : Processes logic
-BusinessLogicLayer --> PersistenceLayer : Performs data operations
+PresentationLayer --> Facade : Uses
+Facade --> BusinessLogicLayer : Handles business logic
+BusinessLogicLayer --> PersistenceLayer : Database operations
 
-# TASK 1 - Business Logic Layer
+```
 
-## Objective  
-Design a detailed class diagram for the Business Logic layer of the HBnB application.  
-The diagram should clearly represent the main entities, their attributes, methods, and relationships.
+------
 
+
+# 📍TASK 1 -Business Logic Layer
+
+   ## Overview
+   
+      This document describes the **Business Logic layer** of the HBnB application. It provides a detailed UML 
+      class diagram representing the core entities of the system, their attributes, methods, and relationships.
+      The main goal is to clearly model how the business logic of the application is structured and how the main 
+      entities interact with each other.
+   
+---
+   
+   ## Business Logic Layer
+   
+      The Business Logic layer contains the core entities of the application:
+      - User
+      - Place
+      - Review
+      - Amenity
+      These entities define the main functionality of the system and enforce business rules.
+   
 ---
 
-## Overview  
-
-This section describes the **Business Logic Layer** of the HBnB application. It provides a UML class diagram that models the core entities of the system and their interactions.  
-
-The goal is to present a clear and structured representation of how the business logic operates and how entities relate to each other.
-
----
-
-## Business Logic Layer  
-
-The Business Logic Layer contains the core entities of the application:  
-
-- User  
-- Place  
-- Review  
-- Amenity  
-
-These entities are responsible for implementing business rules, managing data validation, and defining system behavior.
-
-Each entity includes:  
-- A unique identifier (UUID)  
-- Creation and update timestamps  
-- Methods that define its behavior  
-
----
-
-## Class Diagram  
+## Class Diagram
 
 ```mermaid
 classDiagram
     class BaseModel {
-        +UUID id
+        +UUID4 id
         +DateTime created_at
         +DateTime updated_at
         +save()
@@ -154,7 +146,6 @@ classDiagram
         +Boolean is_admin
         +register()
         +update_profile()
-        +delete()
     }
 
     class Place {
@@ -163,38 +154,72 @@ classDiagram
         +Float price
         +Float latitude
         +Float longitude
-        +UUID owner_id
+        +UUID4 owner_id
         +create()
         +update()
-        +delete()
     }
 
     class Review {
         +Int rating
         +String comment
-        +UUID place_id
-        +UUID user_id
-        +create()
-        +update()
-        +delete()
+        +UUID4 place_id
+        +UUID4 user_id
+        +post()
     }
 
     class Amenity {
         +String name
         +String description
         +create()
-        +update()
-        +delete()
     }
 
-    %% Inheritance
-    User --|> BaseModel
-    Place --|> BaseModel
-    Review --|> BaseModel
-    Amenity --|> BaseModel
-
     %% Relationships
-    User "1" --> "0..*" Place : owns
-    Place "1" --> "0..*" Review : has
-    User "1" --> "0..*" Review : writes
-    Place "0..*" -- "0..*" Amenity : includes
+    User --|> BaseModel : Inherits
+    Place --|> BaseModel : Inherits
+    Review --|> BaseModel : Inherits
+    Amenity --|> BaseModel : Inherits
+
+    User "1" --> "0..*" Place : Owns
+    Place "1" --> "0..*" Review : Has
+    User "1" --> "0..*" Review : Writes
+    Place "0..*" -- "0..*" Amenity : Includes
+
+```
+
+---
+
+
+# 📍TASK 2 - API Calls
+
+   ## Overview
+      This document shows 2 main API flows in the HBnB application using sequence diagrams.  
+      Each diagram illustrates how the Presentation, Business Logic, and Persistence layers interact.
+   
+---
+
+# User Registration
+
+```mermaid
+sequenceDiagram
+participant User
+participant API
+participant BusinessLogic
+participant Database
+
+User->>API: POST /users (register)
+API->>BusinessLogic: validate & create user
+BusinessLogic->>Database: save user
+Database-->>BusinessLogic: confirmation
+BusinessLogic-->>API: success
+API-->>User: 201 Created
+
+User->>API: Send Review (Rating, Comment)
+API->>BusinessLogic: Check IDs
+BusinessLogic->>Database: Save Review
+Database-->>BusinessLogic: Success
+BusinessLogic-->>API: Review Added
+API-->>User: Thank you for your review!
+
+```
+
+---
