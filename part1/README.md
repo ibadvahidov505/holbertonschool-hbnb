@@ -104,7 +104,7 @@ BusinessLogicLayer --> PersistenceLayer : Database operations
 ------
 
 
-# 📍TASK 1 -Business Logic Layer
+# TASK 1 -Business Logic Layer
 
    ## Overview
    
@@ -189,7 +189,7 @@ classDiagram
 ---
 
 
-# 📍TASK 2 - API Calls
+# TASK 2 - API Calls
 
    ## Overview
       This document shows 2 main API flows in the HBnB application using sequence diagrams.  
@@ -203,23 +203,73 @@ classDiagram
 sequenceDiagram
 participant User
 participant API
+participant Facade
 participant BusinessLogic
 participant Database
 
-User->>API: POST /users (register)
-API->>BusinessLogic: validate & create user
+User->>API: POST /users
+API->>Facade: createUser(data)
+Facade->>BusinessLogic: validate & create
 BusinessLogic->>Database: save user
-Database-->>BusinessLogic: confirmation
-BusinessLogic-->>API: success
+Database-->>BusinessLogic: OK
+BusinessLogic-->>Facade: user created
+Facade-->>API: success
 API-->>User: 201 Created
+```
+# Review Submission Flow
 
-User->>API: Send Review (Rating, Comment)
-API->>BusinessLogic: Check IDs
-BusinessLogic->>Database: Save Review
-Database-->>BusinessLogic: Success
-BusinessLogic-->>API: Review Added
-API-->>User: Thank you for your review!
+```mermaid
+sequenceDiagram
+participant User
+participant API
+participant Facade
+participant BusinessLogic
+participant Database
 
+User->>API: POST /reviews
+API->>Facade: submitReview(data)
+Facade->>BusinessLogic: validate review
+BusinessLogic->>Database: save review
+Database-->>BusinessLogic: OK
+BusinessLogic-->>Facade: review saved
+Facade-->>API: success
+API-->>User: 201 Created
+```
+ # Place Creation
+ ```mermaid
+sequenceDiagram
+participant User
+participant API
+participant Facade
+participant BusinessLogic
+participant Database
+
+User->>API: POST /places
+API->>Facade: createPlace(data)
+Facade->>BusinessLogic: validate place
+BusinessLogic->>Database: save place
+Database-->>BusinessLogic: OK
+BusinessLogic-->>Facade: place created
+Facade-->>API: success
+API-->>User: 201 Created
+```
+# Fetching a List of Places
+ ```mermaid
+sequenceDiagram
+participant User
+participant API
+participant Facade
+participant BusinessLogic
+participant Database
+
+User->>API: GET /places
+API->>Facade: getPlaces(filters)
+Facade->>BusinessLogic: fetch data
+BusinessLogic->>Database: query places
+Database-->>BusinessLogic: results
+BusinessLogic-->>Facade: places list
+Facade-->>API: response
+API-->>User: 200 OK + data
 ```
 
----
+ ---
