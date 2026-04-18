@@ -99,3 +99,102 @@ class PersistenceLayer {
 PresentationLayer --> Facade : Sends requests
 Facade --> BusinessLogicLayer : Processes logic
 BusinessLogicLayer --> PersistenceLayer : Performs data operations
+
+# TASK 1 - Business Logic Layer
+
+## Objective  
+Design a detailed class diagram for the Business Logic layer of the HBnB application.  
+The diagram should clearly represent the main entities, their attributes, methods, and relationships.
+
+---
+
+## Overview  
+
+This section describes the **Business Logic Layer** of the HBnB application. It provides a UML class diagram that models the core entities of the system and their interactions.  
+
+The goal is to present a clear and structured representation of how the business logic operates and how entities relate to each other.
+
+---
+
+## Business Logic Layer  
+
+The Business Logic Layer contains the core entities of the application:  
+
+- User  
+- Place  
+- Review  
+- Amenity  
+
+These entities are responsible for implementing business rules, managing data validation, and defining system behavior.
+
+Each entity includes:  
+- A unique identifier (UUID)  
+- Creation and update timestamps  
+- Methods that define its behavior  
+
+---
+
+## Class Diagram  
+
+```mermaid
+classDiagram
+    class BaseModel {
+        +UUID id
+        +DateTime created_at
+        +DateTime updated_at
+        +save()
+        +update(data)
+    }
+
+    class User {
+        +String first_name
+        +String last_name
+        +String email
+        +String password
+        +Boolean is_admin
+        +register()
+        +update_profile()
+        +delete()
+    }
+
+    class Place {
+        +String title
+        +String description
+        +Float price
+        +Float latitude
+        +Float longitude
+        +UUID owner_id
+        +create()
+        +update()
+        +delete()
+    }
+
+    class Review {
+        +Int rating
+        +String comment
+        +UUID place_id
+        +UUID user_id
+        +create()
+        +update()
+        +delete()
+    }
+
+    class Amenity {
+        +String name
+        +String description
+        +create()
+        +update()
+        +delete()
+    }
+
+    %% Inheritance
+    User --|> BaseModel
+    Place --|> BaseModel
+    Review --|> BaseModel
+    Amenity --|> BaseModel
+
+    %% Relationships
+    User "1" --> "0..*" Place : owns
+    Place "1" --> "0..*" Review : has
+    User "1" --> "0..*" Review : writes
+    Place "0..*" -- "0..*" Amenity : includes
