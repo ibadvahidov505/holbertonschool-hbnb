@@ -1,1 +1,101 @@
-salam
+# HBnB – Technical Documentation  
+
+## TASK 0 - High-Level Package Diagram  
+
+---
+
+## Overview  
+This document presents a high-level package diagram of the HBnB Evolution application. It describes a three-layer architecture and illustrates how these layers communicate using the Facade design pattern.  
+
+The purpose of this documentation is to provide a clear understanding of the system structure, its components, and how different parts interact with each other.
+
+---
+
+## Architecture Overview  
+The HBnB application is designed using a layered architecture consisting of three main layers:  
+
+1. Presentation Layer  
+2. Business Logic Layer  
+3. Persistence Layer  
+
+Each layer has a specific responsibility and interacts with other layers in a structured and controlled manner.
+
+---
+
+## Layer Descriptions  
+
+### 1. Presentation Layer  
+This layer represents the interface between the user and the system. It includes API endpoints and services that handle incoming user requests.  
+
+When a user performs an action, the request is received in this layer and passed through the Facade.
+
+---
+
+### 2. Business Logic Layer  
+This layer contains the core logic of the application. It includes the main entities:  
+
+- User  
+- Place  
+- Review  
+- Amenity  
+
+Responsibilities include applying business rules, validating data, and controlling application behavior.
+
+---
+
+### 3. Persistence Layer  
+This layer is responsible for storing and retrieving data from the database.  
+
+It includes:  
+- UserRepository  
+- PlaceRepository  
+- ReviewRepository  
+- AmenityRepository  
+
+---
+
+## Facade Pattern  
+
+The Facade acts as an intermediary between layers and provides a unified interface.
+
+### Benefits:  
+- Single entry point  
+- Reduced complexity  
+- Improved maintainability  
+
+---
+
+## Package Diagram  
+
+```mermaid
+classDiagram
+
+class PresentationLayer {
+    +API Endpoints
+    +Services
+}
+
+class Facade {
+    +createUser()
+    +getPlaces()
+    +createReview()
+    +createAmenity()
+}
+
+class BusinessLogicLayer {
+    +User
+    +Place
+    +Review
+    +Amenity
+}
+
+class PersistenceLayer {
+    +UserRepository
+    +PlaceRepository
+    +ReviewRepository
+    +AmenityRepository
+}
+
+PresentationLayer --> Facade : Sends requests
+Facade --> BusinessLogicLayer : Processes logic
+BusinessLogicLayer --> PersistenceLayer : Performs data operations
